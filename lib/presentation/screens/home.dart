@@ -5,6 +5,11 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(body: Center(child: Text('Home Screen')));
+    return const Scaffold(
+      backgroundColor: Colors.black,
+      body: Center(child: Text('Site Under Management!', style: TextStyle(
+        color : Colors.white, 
+        fontSize: 40
+      ),)));
   }
 }
