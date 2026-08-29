@@ -5,6 +5,8 @@ import '../../../../core/routing/app_router.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../controllers/auth_actions.dart';
+import '../utils/show_auth_error.dart';
+import '../../domain/auth_failure.dart';
 import '../widgets/auth_footer.dart';
 import '../widgets/auth_layout.dart';
 import '../widgets/auth_logo.dart';
@@ -34,11 +36,12 @@ class _ForgotPasswordSuccessPageState extends State<ForgotPasswordSuccessPage> {
     try {
       await widget.authActions.onResendResetEmail(email: widget.email);
       if (!mounted) return;
-      ScaffoldMessenger.of(context)
-        ..hideCurrentSnackBar()
-        ..showSnackBar(
-          const SnackBar(content: Text('Reset email sent again.')),
-        );
+      showAuthMessage(context, 'Reset email sent again.');
+    } on AuthCancelledException {
+      return;
+    } catch (error) {
+      if (!mounted) return;
+      showAuthError(context, error);
     } finally {
       if (mounted) setState(() => _isResending = false);
     }

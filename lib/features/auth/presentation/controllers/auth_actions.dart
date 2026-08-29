@@ -1,44 +1,48 @@
-/// Placeholder authentication actions.
+import '../../data/services/firebase_auth_service.dart';
+import '../../domain/auth_repository.dart';
+import '../../domain/models/app_user.dart';
+
+/// UI-facing authentication actions.
 ///
-/// These methods currently simulate network latency only.
-/// Replace each implementation with Firebase Authentication when integrating.
+/// Pages keep using this class so Firebase stays behind the repository.
 class AuthActions {
-  const AuthActions();
+  const AuthActions({this.repository});
 
-  /// TODO: Sign in with Firebase Auth using [email] and [password].
-  Future<void> onLogin({
-    required String email,
-    required String password,
-  }) async {
-    await Future<void>.delayed(const Duration(milliseconds: 900));
+  final AuthRepository? repository;
+
+  AuthRepository get _auth => repository ?? FirebaseAuthService.instance;
+
+  AppUser? get currentUser => _auth.currentUser;
+
+  Stream<AppUser?> get userChanges => _auth.userChanges;
+
+  Future<void> onLogin({required String email, required String password}) {
+    return _auth.signInWithEmail(email: email, password: password);
   }
 
-  /// TODO: Sign in with Firebase Auth Google provider.
-  Future<void> onGoogleLogin() async {
-    await Future<void>.delayed(const Duration(milliseconds: 900));
-  }
+  Future<void> onGoogleLogin() => _auth.signInWithGoogle();
 
-  /// TODO: Create a Firebase Auth user and store [fullName] on the user profile.
   Future<void> onRegister({
     required String fullName,
     required String email,
     required String password,
-  }) async {
-    await Future<void>.delayed(const Duration(milliseconds: 900));
+  }) {
+    return _auth.registerWithEmail(
+      fullName: fullName,
+      email: email,
+      password: password,
+    );
   }
 
-  /// TODO: Register / sign in with Firebase Auth Google provider.
-  Future<void> onGoogleRegister() async {
-    await Future<void>.delayed(const Duration(milliseconds: 900));
+  Future<void> onGoogleRegister() => _auth.signInWithGoogle();
+
+  Future<void> onForgotPassword({required String email}) {
+    return _auth.sendPasswordResetEmail(email: email);
   }
 
-  /// TODO: Send a Firebase Auth password-reset email to [email].
-  Future<void> onForgotPassword({required String email}) async {
-    await Future<void>.delayed(const Duration(milliseconds: 900));
+  Future<void> onResendResetEmail({required String email}) {
+    return _auth.sendPasswordResetEmail(email: email);
   }
 
-  /// TODO: Resend a Firebase Auth password-reset email to [email].
-  Future<void> onResendResetEmail({required String email}) async {
-    await Future<void>.delayed(const Duration(milliseconds: 900));
-  }
+  Future<void> onLogout() => _auth.signOut();
 }

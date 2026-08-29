@@ -4,6 +4,7 @@ import '../../features/auth/presentation/pages/forgot_password_page.dart';
 import '../../features/auth/presentation/pages/forgot_password_success_page.dart';
 import '../../features/auth/presentation/pages/login_page.dart';
 import '../../features/auth/presentation/pages/register_page.dart';
+import '../../features/dashboard/presentation/pages/dashboard_page.dart';
 import '../../presentation/screens/home.dart';
 
 class AppRoutes {
@@ -13,13 +14,14 @@ class AppRoutes {
   static const String register = '/register';
   static const String forgotPassword = '/forgot-password';
   static const String forgotPasswordSuccess = '/forgot-password-success';
+  static const String dashboard = '/dashboard';
   static const String home = '/home';
 }
 
 class AppRouter {
   AppRouter._();
 
-  static Route<dynamic> onGenerateRoute(RouteSettings settings) {
+  static Route<dynamic> onGenerateAuthRoute(RouteSettings settings) {
     switch (settings.name) {
       case AppRoutes.register:
         return _fade(const RegisterPage(), settings);
@@ -30,12 +32,21 @@ class AppRouter {
             ? settings.arguments as String
             : '';
         return _fade(ForgotPasswordSuccessPage(email: email), settings);
-      case AppRoutes.home:
-        return _fade(const HomeScreen(), settings);
       case AppRoutes.login:
       case '/':
       default:
         return _fade(const LoginPage(), settings);
+    }
+  }
+
+  static Route<dynamic> onGenerateRoute(RouteSettings settings) {
+    switch (settings.name) {
+      case AppRoutes.dashboard:
+        return _fade(const DashboardPage(), settings);
+      case AppRoutes.home:
+        return _fade(const HomeScreen(), settings);
+      default:
+        return onGenerateAuthRoute(settings);
     }
   }
 

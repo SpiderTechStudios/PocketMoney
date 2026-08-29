@@ -4,7 +4,9 @@ import '../../../../core/responsive/breakpoints.dart';
 import '../../../../core/routing/app_router.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/utils/validators.dart';
+import '../../domain/auth_failure.dart';
 import '../controllers/auth_actions.dart';
+import '../utils/show_auth_error.dart';
 import '../widgets/auth_header.dart';
 import '../widgets/auth_layout.dart';
 import '../widgets/auth_text_field.dart';
@@ -46,6 +48,11 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
       if (!mounted) return;
       Navigator.of(context)
           .pushNamed(AppRoutes.forgotPasswordSuccess, arguments: email);
+    } on AuthCancelledException {
+      return;
+    } catch (error) {
+      if (!mounted) return;
+      showAuthError(context, error);
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }

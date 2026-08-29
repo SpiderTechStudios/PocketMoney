@@ -5,7 +5,9 @@ import '../../../../core/responsive/breakpoints.dart';
 import '../../../../core/routing/app_router.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/utils/validators.dart';
+import '../../domain/auth_failure.dart';
 import '../controllers/auth_actions.dart';
+import '../utils/show_auth_error.dart';
 import '../widgets/auth_divider.dart';
 import '../widgets/auth_footer.dart';
 import '../widgets/auth_header.dart';
@@ -58,8 +60,11 @@ class _LoginPageState extends State<LoginPage> {
       );
       if (!mounted) return;
       TextInput.finishAutofillContext();
-      Navigator.of(context)
-          .pushNamedAndRemoveUntil(AppRoutes.home, (route) => false);
+    } on AuthCancelledException {
+      return;
+    } catch (error) {
+      if (!mounted) return;
+      showAuthError(context, error);
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
@@ -70,9 +75,11 @@ class _LoginPageState extends State<LoginPage> {
     setState(() => _isGoogleLoading = true);
     try {
       await widget.authActions.onGoogleLogin();
+    } on AuthCancelledException {
+      return;
+    } catch (error) {
       if (!mounted) return;
-      Navigator.of(context)
-          .pushNamedAndRemoveUntil(AppRoutes.home, (route) => false);
+      showAuthError(context, error);
     } finally {
       if (mounted) setState(() => _isGoogleLoading = false);
     }

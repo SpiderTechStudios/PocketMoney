@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pocketmoney/core/routing/app_router.dart';
 import 'package:pocketmoney/core/theme/app_theme.dart';
+import 'package:pocketmoney/features/auth/domain/models/app_user.dart';
 import 'package:pocketmoney/features/auth/presentation/controllers/auth_actions.dart';
 import 'package:pocketmoney/features/auth/presentation/pages/forgot_password_page.dart';
 import 'package:pocketmoney/features/auth/presentation/pages/forgot_password_success_page.dart';
@@ -17,6 +18,10 @@ class _InstantAuthActions extends AuthActions {
 
   @override
   Future<void> onResendResetEmail({required String email}) async {}
+}
+
+Widget _loggedOutApp() {
+  return PocketMoneyApp(authStateChanges: Stream<AppUser?>.value(null));
 }
 
 void main() {
@@ -42,7 +47,8 @@ void main() {
   }
 
   testWidgets('app launches on the login screen', (tester) async {
-    await tester.pumpWidget(const PocketMoneyApp());
+    await tester.pumpWidget(_loggedOutApp());
+    await tester.pumpAndSettle();
 
     expect(find.text('Welcome back'), findsOneWidget);
     expect(find.text('Log in'), findsOneWidget);
@@ -50,7 +56,8 @@ void main() {
   });
 
   testWidgets('login shows validation errors for empty fields', (tester) async {
-    await tester.pumpWidget(const PocketMoneyApp());
+    await tester.pumpWidget(_loggedOutApp());
+    await tester.pumpAndSettle();
 
     await tester.tap(find.text('Log in'));
     await tester.pump();
@@ -60,7 +67,8 @@ void main() {
   });
 
   testWidgets('login navigates to registration', (tester) async {
-    await tester.pumpWidget(const PocketMoneyApp());
+    await tester.pumpWidget(_loggedOutApp());
+    await tester.pumpAndSettle();
 
     await tester.ensureVisible(find.text('Sign Up'));
     await tester.pumpAndSettle();
@@ -72,7 +80,8 @@ void main() {
   });
 
   testWidgets('login navigates to forgot password', (tester) async {
-    await tester.pumpWidget(const PocketMoneyApp());
+    await tester.pumpWidget(_loggedOutApp());
+    await tester.pumpAndSettle();
 
     await tester.tap(find.text('Forgot password?'));
     await tester.pumpAndSettle();
