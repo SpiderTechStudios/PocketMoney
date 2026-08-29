@@ -1,23 +1,24 @@
 import 'package:flutter/material.dart';
-import 'presentation/screens/home.dart';
 
+import 'core/routing/app_router.dart';
+import 'core/theme/app_theme.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const PocketMoneyApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class PocketMoneyApp extends StatelessWidget {
+  const PocketMoneyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'PocketMoneyByJuKu',
-      theme: ThemeData(
-        colorScheme: .fromSeed(seedColor: Colors.deepPurple),
-      ),
-      home: const HomeScreen()
+      title: 'PocketMoney',
+      debugShowCheckedModeBanner: false,
+      theme: AppTheme.light(),
+      scrollBehavior: const AppScrollBehavior(),
+      initialRoute: AppRoutes.login,
+      onGenerateRoute: AppRouter.onGenerateRoute,
     );
   }
 }
