@@ -7,7 +7,7 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return const Scaffold(
       backgroundColor: Colors.black,
-      body: Center(child: Text('Site Under Management!', style: TextStyle(
+      body: Center(child: Text('Site Under Construction!', style: TextStyle(
         color : Colors.white, 
         fontSize: 40
       ),)));
