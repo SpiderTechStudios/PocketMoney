@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 
+import '../../features/app_shell/app_shell.dart';
+import '../../features/auth/data/services/firebase_auth_service.dart';
 import '../../features/auth/presentation/pages/forgot_password_page.dart';
 import '../../features/auth/presentation/pages/forgot_password_success_page.dart';
 import '../../features/auth/presentation/pages/login_page.dart';
 import '../../features/auth/presentation/pages/register_page.dart';
-import '../../features/dashboard/presentation/pages/dashboard_page.dart';
 import '../../presentation/screens/home.dart';
 
 class AppRoutes {
@@ -42,7 +43,11 @@ class AppRouter {
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
       case AppRoutes.dashboard:
-        return _fade(const DashboardPage(), settings);
+        final user = FirebaseAuthService.instance.currentUser;
+        return _fade(
+          user == null ? const LoginPage() : AppShell(user: user),
+          settings,
+        );
       case AppRoutes.home:
         return _fade(const HomeScreen(), settings);
       default:

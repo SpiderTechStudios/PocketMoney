@@ -41,6 +41,26 @@ class Validators {
     return null;
   }
 
+  static String? amount(String? value, {String fieldName = 'Amount'}) {
+    final requiredError = requiredField(value, fieldName);
+    if (requiredError != null) return requiredError;
+    final parsed = num.tryParse(value!.trim().replaceAll(',', ''));
+    if (parsed == null) return 'Enter a valid ${fieldName.toLowerCase()}';
+    if (parsed <= 0) return '$fieldName must be greater than zero';
+    return null;
+  }
+
+  static String? optionalNonNegative(
+    String? value, {
+    String fieldName = 'Fee',
+  }) {
+    if (value == null || value.trim().isEmpty) return null;
+    final parsed = num.tryParse(value.trim().replaceAll(',', ''));
+    if (parsed == null) return 'Enter a valid ${fieldName.toLowerCase()}';
+    if (parsed < 0) return '$fieldName cannot be negative';
+    return null;
+  }
+
   static String? confirmPassword(String? value, String password) {
     final requiredError = requiredField(value, 'Confirm password');
     if (requiredError != null) return requiredError;

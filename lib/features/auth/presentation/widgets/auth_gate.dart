@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../domain/models/app_user.dart';
 import '../../data/services/firebase_auth_service.dart';
 import '../../../../core/routing/app_router.dart';
-import '../../../../features/dashboard/presentation/pages/dashboard_page.dart';
+import '../../../../features/app_shell/app_shell.dart';
 import 'auth_splash_screen.dart';
 
 class AuthGate extends StatelessWidget {
@@ -38,7 +38,7 @@ class AuthGate extends StatelessWidget {
         }
 
         if (user != null) {
-          return const DashboardPage();
+          return AppShell(user: user);
         }
 
         return Navigator(

@@ -13,11 +13,12 @@ class UserProfileService {
   static const String passwordProvider = 'password';
   static const String googleProvider = 'google';
 
-  DatabaseReference _userRef(String uid) => _database.ref('$_usersPath/$uid');
+  DatabaseReference _profileRef(String uid) =>
+      _database.ref('$_usersPath/$uid/profile');
 
   Future<bool> userProfileExists(String uid) async {
     try {
-      final snapshot = await _userRef(uid).get();
+      final snapshot = await _profileRef(uid).get();
       return snapshot.exists;
     } catch (error) {
       throw AuthFailure.from(error);
@@ -26,7 +27,7 @@ class UserProfileService {
 
   Future<UserProfile?> getUserProfile(String uid) async {
     try {
-      final snapshot = await _userRef(uid).get();
+      final snapshot = await _profileRef(uid).get();
       if (!snapshot.exists || snapshot.value is! Map) {
         return null;
       }
@@ -38,7 +39,7 @@ class UserProfileService {
     }
   }
 
-  /// Creates a new profile. Passwords are never written.
+  /// Creates the V1 profile document. Workspace defaults are seeded on login.
   Future<void> createUserProfile({
     required String uid,
     required String name,
@@ -52,13 +53,14 @@ class UserProfileService {
         'name': name,
         'email': email,
         'provider': provider,
+        'currency': 'TZS',
         'createdAt': ServerValue.timestamp,
         'updatedAt': ServerValue.timestamp,
       };
       if (photoUrl != null && photoUrl.isNotEmpty) {
         payload['photoUrl'] = photoUrl;
       }
-      await _userRef(uid).set(payload);
+      await _profileRef(uid).set(payload);
     } catch (error) {
       throw AuthFailure.from(error);
     }
@@ -69,15 +71,13 @@ class UserProfileService {
     Map<String, Object?> updates = const {},
   }) async {
     try {
-      await _userRef(uid)
+      await _profileRef(uid)
           .update({...updates, 'updatedAt': ServerValue.timestamp});
     } catch (error) {
       throw AuthFailure.from(error);
     }
   }
 
-  /// Creates a Google user profile, or refreshes [updatedAt] without
-  /// overwriting existing name/email/photo unless those fields are empty.
   Future<void> upsertGoogleProfile({
     required String uid,
     required String name,
@@ -107,6 +107,10 @@ class UserProfileService {
         photoUrl != null &&
         photoUrl.isNotEmpty) {
       updates['photoUrl'] = photoUrl;
+    }
+    if (updates.isEmpty) {
+      await updateUserProfile(uid: uid);
+      return;
     }
     await updateUserProfile(uid: uid, updates: updates);
   }

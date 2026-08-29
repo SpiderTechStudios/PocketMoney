@@ -29,6 +29,7 @@ class UserProfile {
     required this.email,
     required this.provider,
     this.photoUrl,
+    this.currency = 'TZS',
     this.createdAt,
     this.updatedAt,
   });
@@ -38,6 +39,7 @@ class UserProfile {
   final String email;
   final String provider;
   final String? photoUrl;
+  final String currency;
   final int? createdAt;
   final int? updatedAt;
 
@@ -48,6 +50,7 @@ class UserProfile {
       email: data['email'] as String? ?? '',
       provider: data['provider'] as String? ?? 'password',
       photoUrl: data['photoUrl'] as String?,
+      currency: data['currency'] as String? ?? 'TZS',
       createdAt: _asInt(data['createdAt']),
       updatedAt: _asInt(data['updatedAt']),
     );
